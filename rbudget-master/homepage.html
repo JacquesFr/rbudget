@@ -1,0 +1,471 @@
+<!DOCTYPE HTML>
+<!--
+	Dimension by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>R'Budget</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload" onload="getBudget()">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+				<div class="nav_container">
+					<div id="navigation">
+						<h1>Money Management</h1>
+						<nav>
+							<ul>
+								<li><a onclick="logout();" >Logout</a></li>
+								<li><a href="homepage.html">Home</a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+				<!-- Header -->
+					<header id="header">
+						<div class="logo">
+							<span class="fas fa-piggy-bank"></span>
+						</div>
+						<div class="content">
+							<div class="inner">
+								<h1> Budget</h1>
+								<form>
+									<input id="budget" name="budget" type="text" >
+									<!---<button type="button" class="button_1" onclick="setBudget();" >Enter</button>-->
+									<button type="button" class="button_1" onclick="window.location.href= '#deposit';">Deposit</button>
+									<button type="button" class="button_1" onclick="window.location.href='#withdraw';">Withdraw</button>
+								</form>						
+							</div>
+						</div>
+						<nav>
+							<ul>
+								<li><a href="#profile" onclick="loadProfile();">Profile</a></li>
+								<li><a href="#statement" onclick="statement();">Statement</a></li>
+								<li><a href="#analytics" onclick="visual();">Analytics</a></li>
+								<li><a href="#goals" onclick="getGoals();">Goals</a></li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Deposit -->
+						<article id="deposit">
+							<h1 class="major">Deposit</h1>
+							<h3>Current Budget</h3>
+							<input type="number" name="deposit_budget" id="deposit_budget" >
+							<h3>Amount to Deposit</li>
+							<input type="number" name="depositAmnt" id="depositAmnt">
+							<h3>Category</h3>
+							<select id="drop_deposit_category">
+								<option value="Income">Income</option>
+								<option value="Financial Aid + Grants">Financial Aid + Grants</option>
+							</select>
+							<h3>Description (optional)</h3>
+							<input type="text" name="description" id="deposit_description">
+							<ul class="actions">
+								<li>
+									<button type="button" class="primary" onclick="deposit();">Submit</button>
+								</li>
+								<li>
+									<button type="button" class="primary" onclick="reset_deposit();">Reset</button>
+								</li>
+							</ul>
+						</article>
+
+						<!-- Withdraw -->
+						<article id="withdraw">
+							<h1 class="major">Withdraw</h1>
+							<h3>Current Budget</h3>
+							<input type="number" name="withdraw_budget" id="withdraw_budget">				<h3>Amount to Withdraw</h3>
+							<input type="number" name="withdrawAmnt" id="withdrawAmnt">
+							<h3>Category</h3>
+							<select id="drop_withdraw_category">
+								<option value="Entertainment">Entertainment</option>
+								<option value="Housing">Housing</option>
+								<option value="Utilities">Utilities</option>
+								<option value="Food">Food</option>
+								<option value="Transportation">Transportation</option>
+								<option value="Education">Education</option>
+								<option value="Loan Repayment">Loan Repayment</option>
+								<option value="Child Care">Child Care</option>
+								<option value="Savings">Savings</option>
+							</select>
+							<h3>Description (optional)</h3>
+							<input type="text" name="description" id="withdraw_description">
+							<ul class="actions">
+								<li>
+									<button type="button" class="primary" onclick="withdraw();">Submit</button>
+								</li>
+								<li>
+									<button type="button" class="primary" onclick="reset_withdraw();">Reset</button>
+								</li>
+							</ul>
+						</article>
+						<!-- Profile -->
+							<article id="profile">
+								<h2 class="major">Profile</h2>
+								<form>
+									<div class="img_wrap">
+										<input type="file" id="upload" name="profImg" accept="image/*" style="display: none;">
+										<button class="profImgBtn" onclick="loadProfileImg(); return false">Edit</button>
+										<img id="profileImg" src="images/defaultprofile.png">
+									</div>
+									<div id="profileInfo">
+										<input type="text" name="name" id="profileName" class="editable" placeholder="FirstName LastName" disabled>
+										<p> Email: </p> <input type="email" name="email" id="profileEmail" class="editable" placeholder="email@email.com" disabled>
+										<p> Phone: </p> <input type="tel" name="phone" id="profilePhone" class="editable" placeholder="(123)456-7890" disabled>
+										<p> Address: </p> <input type="text" name="address" id="profileAddress" class="editable" placeholder="1234 Address St." disabled>
+									</div>
+								</form>
+								<button class="edit" id="editSave" onclick="edit();">Edit</button>
+							</article>
+
+
+						<!-- analytics -->
+							<article id="analytics">
+								<h2 class="major">Analytics</h2>
+								
+								<span style="display: inline;">
+									<button type="button" class="button_1" onclick="menu(1);">Over/Under</button>
+									<button type="button" class="button_1" onclick="menu(2);">Your Spending</button>
+									<button type="button" class="button_1" onclick="menu(3);">Our Recommendations</button>
+								</span>
+								
+								<font size = "4 px">
+									<style>
+										body { background-color: #30303d; color: #fff; }
+										#chartdiv {
+											width: 100%;
+											height: 500px;
+										}
+										#chartdiv2 {
+											width: 100%;
+											height: 500px;
+										}	
+									</style>
+									<div id="chartdiv3" style="display: none"></div>
+									<div id="chartdiv" style="display: none"></div>
+									<div id="chartdiv2"></div>
+								</font>
+								
+								<script>
+									function menu(option){
+										var x = document.getElementById("chartdiv3"); 
+										var y = document.getElementById("chartdiv"); 
+										var z = document.getElementById("chartdiv2"); 
+										if(option == 1){	
+											if (x.style.display === "none") {
+												x.style.display = "block";
+												y.style.display = "none";
+												z.style.display = "none";	
+											} else {
+												x.style.display = "none";
+											}
+										}
+										else if(option == 2){
+											if (y.style.display === "none") {
+												x.style.display = "none";
+												y.style.display = "block";
+												z.style.display = "none";	
+											} else {
+												y.style.display = "none";
+											}
+										}
+										else if(option == 3){	
+											if (z.style.display === "none") {
+												x.style.display = "none";
+												y.style.display = "none";
+												z.style.display = "block";	
+											} else {
+												z.style.display = "none";
+											}
+										}
+									}
+								</script>
+
+								<!-- <h3>Over/Under</h3>
+								<font size="4 px">
+								<style>
+									body { background-color: #30303d; color: #fff; }
+								</style>
+									 
+								<div id="chartdiv3"></div>
+
+								</font>
+
+								<h3>Your Spending</h3>
+								<font size="4 px">
+								<style>
+									body { background-color: #30303d; color: #fff; }
+									#chartdiv {
+									  width: 100%;
+									  height: 500px;
+									}	
+								</style>
+									
+								<div id="chartdiv"></div>
+								</font>
+
+								<h3>Our Recommendations</h3>
+								<font size="4 px">
+								<style>
+									body { background-color: #30303d; color: #fff; }
+									#chartdiv2 {
+									  width: 100%;
+									  height: 500px;
+									}	
+								</style> 
+								
+								<div id="chartdiv2"></div>	
+								</font>-->
+
+
+								<br> <br> 
+								
+								<style>
+									#centerRecButton {
+									  display: flex;
+									  justify-content: center;
+									  align-items: center;
+									}
+								</style>
+
+								<div id = "centerRecButton">
+									<button type="button" class="primary" onclick="window.location.href='#setRecommend';">Set Recommendations</button>
+								</div>
+								<br>
+								<li id = "centerRecButton">
+									<button type="button" class="primary" onclick="resetCategories();">Reset Categories</button>
+									<font size="3px">
+										<li id = "centerRecButton">*Recommended To Reset At The Beginning Of The Month</li>
+									</font>
+								</li>
+
+								
+
+							</article>
+
+							<article id="setRecommend">
+
+								<h2 class="major">Set Budget Recommendations</h2>
+
+								<ul>
+									<font size="5 px">	
+										<li>Total Percentage Must Equal 100 </li>
+									</font>
+								</ul>
+
+								<li>
+									<h3>Housing Percentage</h3>
+									<input type="number" name="setHousing" id="setHousing">
+									<h3>Food Percentage</h3>
+									<input type="number" name="setFood" id="setFood">
+									<h3>Utilities Percentage</h3>
+									<input type="number" name="setUtilities" id="setUtilities">
+									<h3>Savings Percentage</h3>
+									<input type="number" name="setSavings" id="setSavings">
+									<h3>Education Percentage</h3>
+									<input type="number" name="setEducation" id="setEducation">
+									<h3>Entertainment Percentage</h3>
+									<input type="number" name="setEntertainment" id="setEntertainment">
+									<h3>Transportation Percentage</h3>
+									<input type="number" name="setTransportation" id="setTransportation">
+									<h3>Loans Percentage</h3>
+									<input type="number" name="setLoans" id="setLoans">
+									<h3>Child Care Percentage</h3>
+									<input type="number" name="setChildCare" id="setChildCare">
+								</li>
+								<div id = "centerRecButton">
+									<button type="button" class="primary" onclick="setRecommend();">Submit</button>
+								</div>
+							</article>
+
+						<!-- statement -->
+							<article id="statement">
+								<h2 class="major">Statement</h2>
+								<dl id="statements_log"></dl>
+
+									<div></div>
+							</article>
+
+						<!-- budget goals -->
+						
+							
+							<!-- goals -->
+							<article id="goals">
+								<h2 class="major">goals</h2>
+								<h4>Here you can set up to 3 goals and be notified when you meet them!</h4>
+								<br>
+							
+								<h3>Goal #1</h3>
+
+								
+								<h3>What are you saving for?</h3>
+								<input type="text" name="goal_description" id="goal_description">
+
+								<h3>Set How Much You Want to Save for Your Goal</h3>
+								<input type="number" name="deposit_budget_goal" id="deposit_budget_goal" >
+
+								<h3>Set what percentage of your savings you want to go towards your goal</h3>
+								<input type="number" name="percentage_goal" id="percentage_goal">
+								
+								<h2 id = "goal1"></h2>
+								
+								<style>
+									#submitPurchaseButton1 {
+									  display: inline-block;
+									  justify-content: center;
+									  align-items: center;
+									  position: relative;
+									  float: left;
+									}
+								</style>
+
+								<div id = 'submitPurchaseButton1'>
+								
+								</div>
+
+								<button type="button" class="primary" onclick="setGoal1();">Submit</button>
+							
+								<br>
+								<br>
+								<h3>Goal #2</h3>
+								
+								<h3>What are you saving for?</h3>
+								<input type="text" name="goal_description2" id="goal_description2">
+
+								<h3>Set How Much You Want to Save for Your Goal</h3>
+								<input type="number" name="deposit_budget_goal2" id="deposit_budget_goal2" >
+
+								<h3>Set what percentage of your savings you want to go towards your goal</h3>
+								<input type="number" name="percentage_goal2" id="percentage_goal2">
+								<h2 id = "goal2"></h2>
+
+								<style>
+									#submitPurchaseButton2 {
+									  display: inline-block;
+									  justify-content: center;
+									  align-items: center;
+									  position: relative;
+									  float: left;
+									}
+								</style>
+
+								<div id = 'submitPurchaseButton2'>
+								
+								</div>
+								
+								<button type="button" class="primary" onclick="setGoal2();">Submit</button>
+
+								<br>
+								<br>
+								
+								<h3>Goal #3</h3>
+								
+								<h3>What are you saving for?</h3>
+								<input type="text" name="goal_description3" id="goal_description3">
+
+								<h3>Set How Much You Want to Save for Your Goal</h3>
+								<input type="number" name="deposit_budget_goal3" id="deposit_budget_goal3" >
+
+								<h3>Set what percentage of your savings you want to go towards your goal</h3>
+								<input type="number" name="percentage_goal3" id="percentage_goal3">
+								<h2 id = "goal3"></h2>
+
+
+								<style>
+									#submitPurchaseButton3 {
+									  display: inline-block;
+									  justify-content: center;
+									  align-items: center;
+									  position: relative;
+									  float: left;
+									}
+								</style>
+
+								<div id = 'submitPurchaseButton3'>
+								
+								</div>
+								
+								<button type="button" class="primary" onclick="setGoal3();">Submit</button>
+
+								<br>
+								<br>
+								<h4>Submitting a new goal will overwrite the previous goal! </h4>
+
+								
+								</form>
+								
+							</article>
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						<p class="copyright">&copy; Designed By UCR Students</a>.</p>
+					</footer>
+			</div>
+
+		<!-- BG -->
+			<div id="bg"></div>
+
+		<!-- Scripts -->
+
+			<!-- TODO: Add SDKs for Firebase products that you want to use
+			     https://firebase.google.com/docs/web/setup#available-libraries -->
+			<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-app.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-analytics.js"></script>
+			<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-auth.js"></script>
+			
+			<script src="https://www.gstatic.com/firebasejs/7.2.1/firebase-firestore.js"></script>
+			<script src="https://www.amcharts.com/lib/4/core.js"></script>
+			<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+			<script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>
+			<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+
+
+			<script>
+			  // Your web app's Firebase configuration
+			  var firebaseConfig = {
+			    apiKey: "AIzaSyB2qbMEfgBqH98Pdbmm3kYPzTTyip0la3U",
+			    authDomain: "rbudget-a870b.firebaseapp.com",
+			    databaseURL: "https://rbudget-a870b.firebaseio.com",
+			    projectId: "rbudget-a870b",
+			    storageBucket: "rbudget-a870b.appspot.com",
+			    messagingSenderId: "893639759319",
+			    appId: "1:893639759319:web:c9e9cb3c47d609eed26792",
+			    measurementId: "G-JZDK060R21"
+			  };
+			  // Initialize Firebase
+			  firebase.initializeApp(firebaseConfig);
+			  firebase.analytics();
+			  var db = firebase.firestore();
+			</script>
+
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script src="assets/js/userState.js"></script>
+			<script src="assets/js/signIn.js"></script>
+			<script src="assets/js/signUp.js"></script>
+			<script src="assets/js/budget.js"></script>
+			<script src="assets/js/statement.js"></script>
+			<script src="assets/js/visual.js"></script>
+			<script src="assets/js/edit.js"></script>
+			<script src="assets/js/profile.js"></script>
+			<script src="assets/js/setRecommend.js"></script>
+			<script src="assets/js/goals.js"></script>
+			<script src="assets/js/menu.js"></script>
+	</body>
+</html>
